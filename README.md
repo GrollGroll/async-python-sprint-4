@@ -106,11 +106,15 @@ GET /<shorten-url-id>/status?[full-info]&[max-result=10]&[offset=0]
 ______________________________________________________
 Создание БД:
 docker run ——rm ——name postgres-fastapi -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=collection -d postgres:16
+
 docker exec -it postgres-fastapi psql -U postgres
+
 CREATE DATABASE shorturl;
 
 Создание таблицы в БД:
+
 alembic revision ——autogenerate -m 01_initial-db
+
 alembic upgrade head
 
 Запуск приложения:
