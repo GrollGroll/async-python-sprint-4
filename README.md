@@ -46,8 +46,8 @@ GET /<shorten-url-id>/status?[full-info]&[max-result=10]&[offset=0]
 
 - [ ] (1 балл) Реализуйте метод `GET /ping`, который возвращает информацию о статусе доступности БД.
 - [ ] (1 балл) Реализуйте возможность «удаления» сохранённого URL. Запись должна остаться, но помечаться как удалённая. При попытке получения полного URL возвращать ответ с кодом `410 Gone`.
-- [ ] (2 балла) Реализуйте middlware, блокирующий доступ к сервису из запрещённых подсетей (black list).
-- [ ] (2 балла) Реализуйте возможность передавать ссылки пачками (batch upload).
+- [x] (2 балла) Реализуйте middlware, блокирующий доступ к сервису из запрещённых подсетей (black list).
+- [x] (2 балла) Реализуйте возможность передавать ссылки пачками (batch upload).
 
 <details>
 <summary> Описание изменений </summary>
@@ -102,3 +102,16 @@ GET /<shorten-url-id>/status?[full-info]&[max-result=10]&[offset=0]
 4. Приведите стиль кода в соответствие pep8, flake8, mypy.
 5. Логируйте результаты действий.
 6. Покройте написанный код тестами.
+
+______________________________________________________
+Создание БД:
+docker run ——rm ——name postgres-fastapi -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=collection -d postgres:16
+docker exec -it postgres-fastapi psql -U postgres
+CREATE DATABASE shorturl;
+
+Создание таблицы в БД:
+alembic revision ——autogenerate -m 01_initial-db
+alembic upgrade head
+
+Запуск приложения:
+python main.py
