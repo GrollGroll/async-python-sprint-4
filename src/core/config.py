@@ -11,9 +11,9 @@ logging_config.dictConfig(LOGGING)
 class AppSettings(BaseSettings):
     app_title: str = "shortened_URL"
     database_dsn: PostgresDsn
-    PROJECT_NAME: str = os.getenv('PROJECT_NAME', 'shortened_URL')
-    PROJECT_HOST: str = os.getenv('PROJECT_HOST', '127.0.0.1')
-    PROJECT_PORT: int = os.getenv('PROJECT_PORT', 8000)
+    project_name: str
+    project_host: str
+    project_port: int
 
     BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

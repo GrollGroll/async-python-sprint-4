@@ -1,6 +1,7 @@
 import secrets
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
 import logging
 import sys
@@ -11,6 +12,8 @@ from models.entity import Entity
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler(stream=sys.stdout))
+
+router = APIRouter()
 
 BLACK_LIST = [
     # "127.0.0.1",
@@ -35,6 +38,7 @@ class IPMiddleware(BaseHTTPMiddleware):
         return response
 
 # Получить сокращённый вариант переданного URL
+@router.post('/', status_code=201)
 async def get_short_url(url: str):
     session = await get_session()
     url_id = secrets.token_urlsafe(5)
@@ -45,11 +49,16 @@ async def get_short_url(url: str):
     return short_url
 
 # Передача ссылок пачками (batch upload) (доп.задание)
-async def batch_upload_url(batch):
+class BatchUpload(BaseModel):
+    urls: list[str]
+
+@router.post('/batch/', status_code=201)
+async def batch_upload_url(batch: BatchUpload):
     for url in batch.urls:
         await get_short_url(url)
 
 # Вернуть оригинальный URL
+@router.get('/{url_id}', status_code=307)
 async def get_original_url(url_id: str):
     session = await get_session()
     query = await session.get(Entity, url_id)
@@ -63,6 +72,7 @@ async def get_original_url(url_id: str):
         
 
 # Вернуть статус использования URL
+@router.get('/status/{url_id}')
 async def get_status(url_id: str):
     session = await get_session()
     query = await session.get(Entity, url_id)
